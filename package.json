@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "brojs server --port 4000 --with-open-browser",
     "start": "npm run dev",
-    "build": "brojs build",
+    "build:prod": "brojs build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
