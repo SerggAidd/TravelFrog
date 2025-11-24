@@ -1,0 +1,123 @@
+[
+  {
+    "id": "lisbon",
+    "name": "Лиссабон",
+    "country": "Португалия",
+    "lat": 38.7223,
+    "lng": -9.1393,
+    "tagline": "Атлантический форпост с идеальным климатом и кафешками на каждом углу.",
+    "image": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad",
+    "partnerDeepLink": "https://tp.media/r?lisbon",
+    "avgDailyCost": 180,
+    "baseBreakdown": {
+      "flights": 32,
+      "lodging": 28,
+      "food": 18,
+      "experiences": 17,
+      "buffer": 5
+    },
+    "focus": {
+      "culture": 85,
+      "nature": 45,
+      "nightlife": 60
+    },
+    "highlights": ["Fado", "LX Factory", "Alfama"]
+  },
+  {
+    "id": "tbilisi",
+    "name": "Тбилиси",
+    "country": "Грузия",
+    "lat": 41.7151,
+    "lng": 44.8271,
+    "tagline": "Грузинская тепло, серные бани и вино прямо из qvevri.",
+    "image": "https://images.unsplash.com/photo-1549899597-1d89470b1ee5",
+    "partnerDeepLink": "https://tp.media/r?tbilisi",
+    "avgDailyCost": 95,
+    "baseBreakdown": {
+      "flights": 30,
+      "lodging": 26,
+      "food": 22,
+      "experiences": 16,
+      "buffer": 6
+    },
+    "focus": {
+      "culture": 75,
+      "nature": 55,
+      "nightlife": 48
+    },
+    "highlights": ["Старый город", "Серные бани", "Кахетия"]
+  },
+  {
+    "id": "antalya",
+    "name": "Анталья",
+    "country": "Турция",
+    "lat": 36.8841,
+    "lng": 30.7056,
+    "tagline": "Средиземное море, all-inclusive и всегда зелёные горы.",
+    "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+    "partnerDeepLink": "https://tp.media/r?antalya",
+    "avgDailyCost": 110,
+    "baseBreakdown": {
+      "flights": 40,
+      "lodging": 27,
+      "food": 15,
+      "experiences": 13,
+      "buffer": 5
+    },
+    "focus": {
+      "culture": 55,
+      "nature": 70,
+      "nightlife": 65
+    },
+    "highlights": ["Пляжи Конияалты", "Каньон Гёйнюк", "Курортные франшизы"]
+  },
+  {
+    "id": "belgrade",
+    "name": "Белград",
+    "country": "Сербия",
+    "lat": 44.7866,
+    "lng": 20.4489,
+    "tagline": "Город фестивалей, балканского кофе и нескучной ночной жизни.",
+    "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+    "partnerDeepLink": "https://tp.media/r?belgrade",
+    "avgDailyCost": 120,
+    "baseBreakdown": {
+      "flights": 33,
+      "lodging": 29,
+      "food": 21,
+      "experiences": 12,
+      "buffer": 5
+    },
+    "focus": {
+      "culture": 68,
+      "nature": 40,
+      "nightlife": 78
+    },
+    "highlights": ["EXIT", "Савамала", "Калемегдан"]
+  },
+  {
+    "id": "bangkok",
+    "name": "Бангкок",
+    "country": "Таиланд",
+    "lat": 13.7563,
+    "lng": 100.5018,
+    "tagline": "Сверкающий мегаполис, уличная еда за $1 и костяк для островных выездов.",
+    "image": "https://images.unsplash.com/photo-1505765050516-f72dcac9c60e",
+    "partnerDeepLink": "https://tp.media/r?bangkok",
+    "avgDailyCost": 140,
+    "baseBreakdown": {
+      "flights": 45,
+      "lodging": 22,
+      "food": 18,
+      "experiences": 10,
+      "buffer": 5
+    },
+    "focus": {
+      "culture": 70,
+      "nature": 50,
+      "nightlife": 80
+    },
+    "highlights": ["Chatuchak", "Chao Phraya", "Rooftop bars"]
+  }
+]
+

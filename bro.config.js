@@ -1,45 +1,38 @@
-const path = require('node:path');
-const pkg = require('./package.json');
+import fs from 'node:fs'
 
-const getCleanName = (name) => name.replace(/^@[-\w]+\//, '');
-const cleanName = getCleanName(pkg.name || 'budget-compass');
-const version = pkg.version || '1.0.0';
-const appRoute = `/${cleanName}`;
-const baseUrl = '/static';
-const publicPath = `${baseUrl}${appRoute}/${version}/`;
+const pkg = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url), 'utf-8'))
+const cleanName = pkg.name.replace(/^@[-\w]+\//, '')
+const baseUrl = '/static'
+const version = pkg.version
 
-const config = {
-  entryPoint: './src/index.tsx',
-  pageTitle: 'Budget Compass',
-  apiPath: './stubs/api',
+export default {
+  apiPath: 'stubs/api',
+  config: {
+    baseUrl,
+    brand: 'TravelForge',
+    environment: 'dev',
+  },
+  navigations: {
+    dashboard: '/',
+    explore: '/explore',
+    trips: '/trips',
+    intelligence: '/intelligence',
+  },
   apps: {
-    [appRoute]: {
+    '/': {
       name: cleanName,
       version,
     },
   },
-  config: {
-    baseUrl,
-    appName: 'Budget Compass',
-  },
-  navigations: {
-    home: appRoute,
-    results: `${appRoute}/results`,
-    saved: `${appRoute}/saved`,
+  features: {
+    travelBot: true,
+    insights: true,
+    currency: true,
   },
   webpackConfig: {
-    resolve: {
-      alias: {
-        '@': path.resolve(process.cwd(), 'src'),
-      },
-    },
     output: {
-      publicPath,
-      filename: 'index.js',
+      publicPath: `${baseUrl}/${cleanName}/${version}/`,
     },
   },
-};
-
-module.exports = config;
-module.exports.default = config;
+}
 

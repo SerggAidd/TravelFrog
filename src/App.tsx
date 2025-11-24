@@ -1,47 +1,58 @@
-import { Routes, Route, NavLink } from 'react-router-dom';
-import Home from './pages/Home';
-import Results from './pages/Results';
-import CityDetail from './pages/CityDetail';
-import SavedTrips from './pages/SavedTrips';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ProfileMenu from './components/ProfileMenu';
-import MobileMenu from './components/MobileMenu';
+import React from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { AppLayout } from './layout/AppLayout'
+import { Dashboard } from './pages/Dashboard'
+import { Explore } from './pages/Explore'
+import { Trips } from './pages/Trips'
+import { Intelligence } from './pages/Intelligence'
+import { Login } from './pages/Login'
+import { Register } from './pages/Register'
+import { GlobalStyles } from './styles/global'
 
-function AppContent() {
-  return (
-    <div className="app">
-      <header className="app__header">
-        <div className="container header__inner">
-          <h1 className="logo">Бюджетный компас</h1>
-          <nav className="nav nav--desktop">
-            <NavLink to="/" end>Главная</NavLink>
-            <NavLink to="/results">Результаты</NavLink>
-            <ProfileMenu />
-          </nav>
-          <div className="nav--mobile">
-            <MobileMenu />
-          </div>
-        </div>
-      </header>
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/results" element={<Results />} />
-          <Route path="/city/:id" element={<CityDetail />} />
-          <Route path="/saved" element={<SavedTrips />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </main>
-      <footer className="footer">
-        <div className="container">
-        </div>
-      </footer>
-    </div>
-  );
+const computeBasename = () => {
+  const [first] = window.location.pathname.split('/').filter(Boolean)
+  return first ? `/${first}` : '/'
 }
 
-export default function App() {
-  return <AppContent />;
+const createRouter = (basename?: string) =>
+  createBrowserRouter(
+    [
+      {
+        element: (
+          <>
+            <GlobalStyles />
+            <AppLayout />
+          </>
+        ),
+        children: [
+          { index: true, element: <Dashboard /> },
+          { path: 'explore', element: <Explore /> },
+          { path: 'trips', element: <Trips /> },
+          { path: 'intelligence', element: <Intelligence /> },
+          { path: 'auth/login', element: <Login /> },
+          { path: 'auth/register', element: <Register /> },
+        ],
+      },
+    ],
+    {
+      basename,
+      future: {
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      },
+    },
+  )
+
+export const App = () => {
+  const basename = React.useMemo(() => {
+    const candidate = computeBasename()
+    return candidate === '/' ? undefined : candidate
+  }, [])
+
+  const router = React.useMemo(() => createRouter(basename), [basename])
+
+  return <RouterProvider router={router} />
 }
+
+export default App
+
