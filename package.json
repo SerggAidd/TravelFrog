@@ -5,11 +5,10 @@
   "main": "src/index.tsx",
   "scripts": {
     "dev": "brojs server --port 4173 --with-open-browser",
-    "build": "brojs build",
+    "build:prod": "brojs build",
     "build:dev": "brojs build --dev",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "postinstall": "node ./scripts/link-self.js"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@brojs/cli": "^1.10.0",
