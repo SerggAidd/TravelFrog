@@ -89,7 +89,7 @@ export const TravelBotPanel = () => {
     // Предотвращаем двойной вызов в StrictMode (эффекты выполняются дважды в dev режиме)
     if (!hasBootstrapped.current) {
       hasBootstrapped.current = true
-      bootstrapTravelBot()
+    bootstrapTravelBot()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Пустой массив - выполняется только при монтировании

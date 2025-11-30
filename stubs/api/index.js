@@ -172,15 +172,15 @@ router.post('/travelbot/init', async (req, res) => {
       code: error.code,
     })
     // Fallback на старую логику
-    const dominantPref = preferences
-      ? Object.entries(preferences)
-          .sort(([, a], [, b]) => b - a)
-          [0][0]
-      : null
-    const prefNames = { culture: 'культура', nature: 'природа', nightlife: 'ночная жизнь' }
-    const prefText = dominantPref ? prefNames[dominantPref] || dominantPref : 'ваши интересы'
-    const answer = `Привет! Я TravelBot. Посмотрел на ${prefText} и подобрал для вас идеальное направление — ${city.name}, ${city.country}. Это место отлично подходит под ваши предпочтения (совпадение ${top.matchScore}%). Хотите узнать больше о ${city.name}?`
-    const followUp = `Могу рассказать про историю, традиции, кухню или достопримечательности ${city.name}. Что вас интересует?`
+  const dominantPref = preferences
+    ? Object.entries(preferences)
+        .sort(([, a], [, b]) => b - a)
+        [0][0]
+    : null
+  const prefNames = { culture: 'культура', nature: 'природа', nightlife: 'ночная жизнь' }
+  const prefText = dominantPref ? prefNames[dominantPref] || dominantPref : 'ваши интересы'
+  const answer = `Привет! Я TravelBot. Посмотрел на ${prefText} и подобрал для вас идеальное направление — ${city.name}, ${city.country}. Это место отлично подходит под ваши предпочтения (совпадение ${top.matchScore}%). Хотите узнать больше о ${city.name}?`
+  const followUp = `Могу рассказать про историю, традиции, кухню или достопримечательности ${city.name}. Что вас интересует?`
     return res.json(success({ answer, followUp, sources: ['travelforge://init'] }))
   }
 })
@@ -233,48 +233,48 @@ router.post('/travelbot/ask', async (req, res) => {
       code: error.code,
     })
     // Fallback на старую логику
-    const lowerPrompt = lastUserMessage.toLowerCase()
-    const isHistoryQuestion = /истори|прошл|когда|основан|создан/.test(lowerPrompt)
-    const isFoodQuestion = /еда|кухн|блюд|традиционн|ресторан|кафе/.test(lowerPrompt)
-    const isCultureQuestion = /культур|традици|обыча|праздник|фестиваль/.test(lowerPrompt)
-    const isAttractionQuestion = /достопримечатель|что посмотреть|место|музей|памятник/.test(lowerPrompt)
-    const isPreferenceChange = /изменил|поменял|сменил|приоритет/.test(lowerPrompt)
-    
-    let answer = ''
-    let followUp = ''
-    
-    if (isPreferenceChange && preferences) {
-      const dominantPref = Object.entries(preferences).sort(([, a], [, b]) => b - a)[0]
-      const prefNames = { culture: 'культура', nature: 'природа', nightlife: 'ночная жизнь' }
-      const prefText = prefNames[dominantPref[0]] || dominantPref[0]
-      const newTop = topMatches?.[0]
-      if (newTop) {
-        answer = `Вижу, что вы изменили приоритеты! Теперь вам больше подходит ${newTop.city.name}, ${newTop.city.country} (совпадение ${newTop.matchScore}%).`
-        followUp = `Хотите узнать про традиции или кухню ${newTop.city.name}?`
-      } else {
-        answer = `Понял, вы изменили приоритеты. Теперь важнее всего ${prefText}. Давайте подберём новое направление!`
-        followUp = 'Нажмите "Собрать маршрут", чтобы увидеть обновлённые рекомендации.'
-      }
-    } else if (isHistoryQuestion) {
-      answer = `${city.name} — древний город с богатой историей. Основан в глубокой древности, пережил множество эпох и культурных влияний. Исторический центр сохранил уникальную архитектуру разных периодов.`
-      followUp = `Хотите узнать про традиции или достопримечательности ${city.name}?`
-    } else if (isFoodQuestion) {
-      answer = `Кухня ${city.name} славится своими традиционными блюдами. Местная гастрономия сочетает в себе древние рецепты и современные интерпретации. Обязательно попробуйте местные специалитеты в традиционных ресторанах.`
-      followUp = `Интересует история или культура ${city.name}?`
-    } else if (isCultureQuestion) {
-      answer = `Культура ${city.name} очень самобытна. Здесь сохранились древние традиции, проводятся фестивали и праздники. Местные жители бережно хранят наследие предков.`
-      followUp = `Хотите узнать про достопримечательности или кухню ${city.name}?`
-    } else if (isAttractionQuestion) {
-      answer = `В ${city.name} множество интересных мест: исторический центр, музеи, парки и природные достопримечательности. Каждое место имеет свою уникальную историю.`
-      followUp = `Интересует история или традиции ${city.name}?`
-    } else if (lastUserMessage) {
-      answer = `Отличный вопрос про ${city.name}! Это направление действительно заслуживает внимания. ${city.tagline || 'Здесь есть что посмотреть и чем заняться.'}`
-      followUp = `Могу рассказать подробнее про историю, кухню, культуру или достопримечательности ${city.name}. Что вас интересует?`
+  const lowerPrompt = lastUserMessage.toLowerCase()
+  const isHistoryQuestion = /истори|прошл|когда|основан|создан/.test(lowerPrompt)
+  const isFoodQuestion = /еда|кухн|блюд|традиционн|ресторан|кафе/.test(lowerPrompt)
+  const isCultureQuestion = /культур|традици|обыча|праздник|фестиваль/.test(lowerPrompt)
+  const isAttractionQuestion = /достопримечатель|что посмотреть|место|музей|памятник/.test(lowerPrompt)
+  const isPreferenceChange = /изменил|поменял|сменил|приоритет/.test(lowerPrompt)
+  
+  let answer = ''
+  let followUp = ''
+  
+  if (isPreferenceChange && preferences) {
+    const dominantPref = Object.entries(preferences).sort(([, a], [, b]) => b - a)[0]
+    const prefNames = { culture: 'культура', nature: 'природа', nightlife: 'ночная жизнь' }
+    const prefText = prefNames[dominantPref[0]] || dominantPref[0]
+    const newTop = topMatches?.[0]
+    if (newTop) {
+      answer = `Вижу, что вы изменили приоритеты! Теперь вам больше подходит ${newTop.city.name}, ${newTop.city.country} (совпадение ${newTop.matchScore}%).`
+      followUp = `Хотите узнать про традиции или кухню ${newTop.city.name}?`
     } else {
-      answer = `Готов помочь с информацией о ${city.name}! Что именно вас интересует?`
-      followUp = 'Могу рассказать про историю, традиции, кухню или достопримечательности.'
+      answer = `Понял, вы изменили приоритеты. Теперь важнее всего ${prefText}. Давайте подберём новое направление!`
+      followUp = 'Нажмите "Собрать маршрут", чтобы увидеть обновлённые рекомендации.'
     }
-    
+  } else if (isHistoryQuestion) {
+    answer = `${city.name} — древний город с богатой историей. Основан в глубокой древности, пережил множество эпох и культурных влияний. Исторический центр сохранил уникальную архитектуру разных периодов.`
+    followUp = `Хотите узнать про традиции или достопримечательности ${city.name}?`
+  } else if (isFoodQuestion) {
+    answer = `Кухня ${city.name} славится своими традиционными блюдами. Местная гастрономия сочетает в себе древние рецепты и современные интерпретации. Обязательно попробуйте местные специалитеты в традиционных ресторанах.`
+    followUp = `Интересует история или культура ${city.name}?`
+  } else if (isCultureQuestion) {
+    answer = `Культура ${city.name} очень самобытна. Здесь сохранились древние традиции, проводятся фестивали и праздники. Местные жители бережно хранят наследие предков.`
+    followUp = `Хотите узнать про достопримечательности или кухню ${city.name}?`
+  } else if (isAttractionQuestion) {
+    answer = `В ${city.name} множество интересных мест: исторический центр, музеи, парки и природные достопримечательности. Каждое место имеет свою уникальную историю.`
+    followUp = `Интересует история или традиции ${city.name}?`
+  } else if (lastUserMessage) {
+    answer = `Отличный вопрос про ${city.name}! Это направление действительно заслуживает внимания. ${city.tagline || 'Здесь есть что посмотреть и чем заняться.'}`
+    followUp = `Могу рассказать подробнее про историю, кухню, культуру или достопримечательности ${city.name}. Что вас интересует?`
+  } else {
+    answer = `Готов помочь с информацией о ${city.name}! Что именно вас интересует?`
+    followUp = 'Могу рассказать про историю, традиции, кухню или достопримечательности.'
+  }
+  
     return res.json(success({ answer, followUp, sources: ['travelforge://context'] }))
   }
 })
