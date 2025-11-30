@@ -13,6 +13,7 @@
 ### Технологии
 - **brojs** (`@brojs/cli`, `@brojs/fire.app`) + React 18 + Emotion + Zustand.
 - **Stub API** на Express (`stubs/api`), данные в `stubs/data`.
+- **TravelBot** с интеграцией **GigaChat** (LLM от Сбера) для умных ответов.
 - **Визуализации**: Recharts, Leaflet.
 - **Тесты**: Vitest.
 
@@ -24,5 +25,13 @@ npm run build         # production сборка в dist/
 npm test              # unit-тесты
 ```
 
+**Примечание:** GigaChat credentials уже настроены в файле `.env`. При первом запуске убедитесь, что установлены все зависимости (включая `dotenv` для загрузки переменных окружения).
+
 Документация продукта: `docs/TRAVELFORGE.md`.
+
+### Настройка GigaChat (опционально)
+
+TravelBot использует GigaChat для умных ответов. Если GigaChat недоступен, используется fallback на шаблонные ответы.
+
+Для настройки GigaChat см. `docs/GIGACHAT_SETUP.md`.
 

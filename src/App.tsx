@@ -9,9 +9,51 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { GlobalStyles } from './styles/global'
 
+/**
+ * Вычисляет basename для роутера на основе текущего пути.
+ * Поддерживает деплой в корень домена и в поддиректорию.
+ * 
+ * Логика:
+ * - Если путь начинается с известных маршрутов приложения, basename = '/'
+ * - Иначе ищем паттерн деплоя (например, /apps/TravelFrog/main) и возвращаем путь до приложения
+ */
 const computeBasename = () => {
-  const [first] = window.location.pathname.split('/').filter(Boolean)
-  return first ? `/${first}` : '/'
+  const pathname = window.location.pathname
+  const segments = pathname.split('/').filter(Boolean)
+  
+  // Известные маршруты приложения
+  const appRoutes = ['explore', 'trips', 'intelligence', 'auth']
+  
+  // Если путь пустой - деплой в корень
+  if (segments.length === 0) {
+    return '/'
+  }
+  
+  // Если первый сегмент - это маршрут приложения, значит деплой в корень
+  if (appRoutes.includes(segments[0])) {
+    return '/'
+  }
+  
+  // Ищем паттерн деплоя: /apps/TravelFrog/main
+  // Если путь содержит 'main', то basename = /apps/TravelFrog/main
+  const mainIndex = segments.indexOf('main')
+  if (mainIndex >= 0) {
+    // Возвращаем путь до 'main' включительно: /apps/TravelFrog/main
+    return '/' + segments.slice(0, mainIndex + 1).join('/')
+  }
+  
+  // Если путь содержит известный маршрут, basename - всё до него
+  for (let i = 0; i < segments.length; i++) {
+    if (appRoutes.includes(segments[i])) {
+      // Найден маршрут, basename - всё до него
+      return '/' + segments.slice(0, i).join('/')
+    }
+  }
+  
+  // Если маршрута нет и нет 'main', но путь не пустой
+  // Возможно, это главная страница в поддиректории
+  // Возвращаем весь путь (будет использован как basename)
+  return '/' + segments.join('/')
 }
 
 const createRouter = (basename?: string) =>

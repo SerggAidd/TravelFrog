@@ -1,9 +1,13 @@
+// Загружаем переменные окружения из .env файла
+require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') })
+
 const express = require('express')
 const { randomUUID } = require('crypto')
 const fs = require('fs')
 const path = require('path')
 const cities = require('../data/cities.json')
 const currencyRates = require('../data/currencies.json')
+const GigachatService = require('./gigachat')
 
 const router = express.Router()
 
@@ -137,26 +141,51 @@ router.post('/currencies/convert', (req, res) => {
   res.json(success({ amount, from, to, result: converted }))
 })
 
-router.post('/travelbot/init', (req, res) => {
+router.post('/travelbot/init', async (req, res) => {
   const { topMatches = [], preferences } = req.body
   if (!topMatches || topMatches.length === 0) {
     return res.json(success({ answer: 'Привет! Я TravelBot. Укажите параметры поиска, и я подберу идеальное направление для вас.', followUp: null }))
   }
+  
   const top = topMatches[0]
   const city = top.city
-  const dominantPref = preferences
-    ? Object.entries(preferences)
-        .sort(([, a], [, b]) => b - a)
-        [0][0]
-    : null
-  const prefNames = { culture: 'культура', nature: 'природа', nightlife: 'ночная жизнь' }
-  const prefText = dominantPref ? prefNames[dominantPref] || dominantPref : 'ваши интересы'
-  const answer = `Привет! Я TravelBot. Посмотрел на ${prefText} и подобрал для вас идеальное направление — ${city.name}, ${city.country}. Это место отлично подходит под ваши предпочтения (совпадение ${top.matchScore}%). Хотите узнать больше о ${city.name}?`
-  const followUp = `Могу рассказать про историю, традиции, кухню или достопримечательности ${city.name}. Что вас интересует?`
-  res.json(success({ answer, followUp, sources: ['travelforge://init'] }))
+  
+  // Пытаемся использовать GigaChat, если доступен
+  try {
+    const gigachatResponse = await GigachatService.askQuestion({
+      question: `Привет! Представься как TravelBot и расскажи пользователю, что ты подобрал для него идеальное направление — ${city.name}, ${city.country} (совпадение ${top.matchScore}%). Предпочтения: ${JSON.stringify(preferences || {})}. Будь дружелюбным и предложи узнать больше о городе.`,
+      city: city,
+      origin: req.body.origin,
+      budget: req.body.budget,
+      preferences: preferences,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+    })
+    
+    const answer = gigachatResponse.answer
+    const followUp = `Могу рассказать про историю, традиции, кухню или достопримечательности ${city.name}. Что вас интересует?`
+    return res.json(success({ answer, followUp, sources: ['gigachat://init'] }))
+  } catch (error) {
+    console.warn('GigaChat недоступен, используем fallback:', {
+      message: error.message,
+      status: error.status || error.response?.status,
+      code: error.code,
+    })
+    // Fallback на старую логику
+    const dominantPref = preferences
+      ? Object.entries(preferences)
+          .sort(([, a], [, b]) => b - a)
+          [0][0]
+      : null
+    const prefNames = { culture: 'культура', nature: 'природа', nightlife: 'ночная жизнь' }
+    const prefText = dominantPref ? prefNames[dominantPref] || dominantPref : 'ваши интересы'
+    const answer = `Привет! Я TravelBot. Посмотрел на ${prefText} и подобрал для вас идеальное направление — ${city.name}, ${city.country}. Это место отлично подходит под ваши предпочтения (совпадение ${top.matchScore}%). Хотите узнать больше о ${city.name}?`
+    const followUp = `Могу рассказать про историю, традиции, кухню или достопримечательности ${city.name}. Что вас интересует?`
+    return res.json(success({ answer, followUp, sources: ['travelforge://init'] }))
+  }
 })
 
-router.post('/travelbot/ask', (req, res) => {
+router.post('/travelbot/ask', async (req, res) => {
   const { prompt, cityId, history = [], budget, preferences, topMatches = [] } = req.body
   const city = cityId ? cities.find((c) => c.id === cityId) : topMatches?.[0]?.city || cities[Math.floor(Math.random() * cities.length)]
   if (!city) {
@@ -166,51 +195,88 @@ router.post('/travelbot/ask', (req, res) => {
   const userMessages = history.filter((msg) => msg.role === 'user').map((msg) => msg.text)
   const lastUserMessage = prompt || userMessages[userMessages.length - 1] || ''
   
-  // Определяем тип вопроса
-  const lowerPrompt = lastUserMessage.toLowerCase()
-  const isHistoryQuestion = /истори|прошл|когда|основан|создан/.test(lowerPrompt)
-  const isFoodQuestion = /еда|кухн|блюд|традиционн|ресторан|кафе/.test(lowerPrompt)
-  const isCultureQuestion = /культур|традици|обыча|праздник|фестиваль/.test(lowerPrompt)
-  const isAttractionQuestion = /достопримечатель|что посмотреть|место|музей|памятник/.test(lowerPrompt)
-  const isPreferenceChange = /изменил|поменял|сменил|приоритет/.test(lowerPrompt)
-  
-  let answer = ''
-  let followUp = ''
-  
-  if (isPreferenceChange && preferences) {
-    const dominantPref = Object.entries(preferences).sort(([, a], [, b]) => b - a)[0]
-    const prefNames = { culture: 'культура', nature: 'природа', nightlife: 'ночная жизнь' }
-    const prefText = prefNames[dominantPref[0]] || dominantPref[0]
-    const newTop = topMatches?.[0]
-    if (newTop) {
-      answer = `Вижу, что вы изменили приоритеты! Теперь вам больше подходит ${newTop.city.name}, ${newTop.city.country} (совпадение ${newTop.matchScore}%).`
-      followUp = `Хотите узнать про традиции или кухню ${newTop.city.name}?`
+  // Пытаемся использовать GigaChat, если доступен
+  try {
+    const topMatch = topMatches?.[0]
+    const gigachatResponse = await GigachatService.askQuestion({
+      question: lastUserMessage || 'Расскажи о городе',
+      city: city,
+      origin: req.body.origin,
+      budget: budget,
+      preferences: preferences,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      budgetBreakdown: topMatch?.adjustedBreakdown,
+      country: city.country,
+      history: history, // Передаем историю для контекста
+    })
+    
+    const answer = gigachatResponse.answer
+    // Генерируем followUp на основе ответа
+    const lowerAnswer = answer.toLowerCase()
+    let followUp = ''
+    if (/истори|прошл/.test(lowerAnswer)) {
+      followUp = `Хотите узнать про традиции или достопримечательности ${city.name}?`
+    } else if (/еда|кухн|ресторан/.test(lowerAnswer)) {
+      followUp = `Интересует история или культура ${city.name}?`
+    } else if (/культур|традици/.test(lowerAnswer)) {
+      followUp = `Хотите узнать про достопримечательности или кухню ${city.name}?`
     } else {
-      answer = `Понял, вы изменили приоритеты. Теперь важнее всего ${prefText}. Давайте подберём новое направление!`
-      followUp = 'Нажмите "Собрать маршрут", чтобы увидеть обновлённые рекомендации.'
+      followUp = `Могу рассказать подробнее про историю, кухню, культуру или достопримечательности ${city.name}. Что вас интересует?`
     }
-  } else if (isHistoryQuestion) {
-    answer = `${city.name} — древний город с богатой историей. Основан в глубокой древности, пережил множество эпох и культурных влияний. Исторический центр сохранил уникальную архитектуру разных периодов.`
-    followUp = `Хотите узнать про традиции или достопримечательности ${city.name}?`
-  } else if (isFoodQuestion) {
-    answer = `Кухня ${city.name} славится своими традиционными блюдами. Местная гастрономия сочетает в себе древние рецепты и современные интерпретации. Обязательно попробуйте местные специалитеты в традиционных ресторанах.`
-    followUp = `Интересует история или культура ${city.name}?`
-  } else if (isCultureQuestion) {
-    answer = `Культура ${city.name} очень самобытна. Здесь сохранились древние традиции, проводятся фестивали и праздники. Местные жители бережно хранят наследие предков.`
-    followUp = `Хотите узнать про достопримечательности или кухню ${city.name}?`
-  } else if (isAttractionQuestion) {
-    answer = `В ${city.name} множество интересных мест: исторический центр, музеи, парки и природные достопримечательности. Каждое место имеет свою уникальную историю.`
-    followUp = `Интересует история или традиции ${city.name}?`
-  } else if (lastUserMessage) {
-    // Общий ответ на любой другой вопрос
-    answer = `Отличный вопрос про ${city.name}! Это направление действительно заслуживает внимания. ${city.tagline || 'Здесь есть что посмотреть и чем заняться.'}`
-    followUp = `Могу рассказать подробнее про историю, кухню, культуру или достопримечательности ${city.name}. Что вас интересует?`
-  } else {
-    answer = `Готов помочь с информацией о ${city.name}! Что именно вас интересует?`
-    followUp = 'Могу рассказать про историю, традиции, кухню или достопримечательности.'
+    
+    return res.json(success({ answer, followUp, sources: ['gigachat://context'] }))
+  } catch (error) {
+    console.warn('GigaChat недоступен, используем fallback:', {
+      message: error.message,
+      status: error.status || error.response?.status,
+      code: error.code,
+    })
+    // Fallback на старую логику
+    const lowerPrompt = lastUserMessage.toLowerCase()
+    const isHistoryQuestion = /истори|прошл|когда|основан|создан/.test(lowerPrompt)
+    const isFoodQuestion = /еда|кухн|блюд|традиционн|ресторан|кафе/.test(lowerPrompt)
+    const isCultureQuestion = /культур|традици|обыча|праздник|фестиваль/.test(lowerPrompt)
+    const isAttractionQuestion = /достопримечатель|что посмотреть|место|музей|памятник/.test(lowerPrompt)
+    const isPreferenceChange = /изменил|поменял|сменил|приоритет/.test(lowerPrompt)
+    
+    let answer = ''
+    let followUp = ''
+    
+    if (isPreferenceChange && preferences) {
+      const dominantPref = Object.entries(preferences).sort(([, a], [, b]) => b - a)[0]
+      const prefNames = { culture: 'культура', nature: 'природа', nightlife: 'ночная жизнь' }
+      const prefText = prefNames[dominantPref[0]] || dominantPref[0]
+      const newTop = topMatches?.[0]
+      if (newTop) {
+        answer = `Вижу, что вы изменили приоритеты! Теперь вам больше подходит ${newTop.city.name}, ${newTop.city.country} (совпадение ${newTop.matchScore}%).`
+        followUp = `Хотите узнать про традиции или кухню ${newTop.city.name}?`
+      } else {
+        answer = `Понял, вы изменили приоритеты. Теперь важнее всего ${prefText}. Давайте подберём новое направление!`
+        followUp = 'Нажмите "Собрать маршрут", чтобы увидеть обновлённые рекомендации.'
+      }
+    } else if (isHistoryQuestion) {
+      answer = `${city.name} — древний город с богатой историей. Основан в глубокой древности, пережил множество эпох и культурных влияний. Исторический центр сохранил уникальную архитектуру разных периодов.`
+      followUp = `Хотите узнать про традиции или достопримечательности ${city.name}?`
+    } else if (isFoodQuestion) {
+      answer = `Кухня ${city.name} славится своими традиционными блюдами. Местная гастрономия сочетает в себе древние рецепты и современные интерпретации. Обязательно попробуйте местные специалитеты в традиционных ресторанах.`
+      followUp = `Интересует история или культура ${city.name}?`
+    } else if (isCultureQuestion) {
+      answer = `Культура ${city.name} очень самобытна. Здесь сохранились древние традиции, проводятся фестивали и праздники. Местные жители бережно хранят наследие предков.`
+      followUp = `Хотите узнать про достопримечательности или кухню ${city.name}?`
+    } else if (isAttractionQuestion) {
+      answer = `В ${city.name} множество интересных мест: исторический центр, музеи, парки и природные достопримечательности. Каждое место имеет свою уникальную историю.`
+      followUp = `Интересует история или традиции ${city.name}?`
+    } else if (lastUserMessage) {
+      answer = `Отличный вопрос про ${city.name}! Это направление действительно заслуживает внимания. ${city.tagline || 'Здесь есть что посмотреть и чем заняться.'}`
+      followUp = `Могу рассказать подробнее про историю, кухню, культуру или достопримечательности ${city.name}. Что вас интересует?`
+    } else {
+      answer = `Готов помочь с информацией о ${city.name}! Что именно вас интересует?`
+      followUp = 'Могу рассказать про историю, традиции, кухню или достопримечательности.'
+    }
+    
+    return res.json(success({ answer, followUp, sources: ['travelforge://context'] }))
   }
-  
-  res.json(success({ answer, followUp, sources: ['travelforge://context'] }))
 })
 
 router.get('/insights', (_req, res) => {

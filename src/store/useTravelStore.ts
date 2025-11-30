@@ -244,7 +244,9 @@ export const useTravelStore = create(
         },
 
         bootstrapTravelBot: async () => {
-          if (get().travelBotThread.length) return
+          // Предотвращаем повторную инициализацию, если бот уже был инициализирован
+          const currentThread = get().travelBotThread
+          if (currentThread.length > 0) return
           set({ travelBotStatus: 'pending' })
           try {
             const topMatches = get().results.slice(0, 3)

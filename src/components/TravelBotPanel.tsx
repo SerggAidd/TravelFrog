@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
 import {
   useTravelStore,
@@ -83,10 +83,16 @@ export const TravelBotPanel = () => {
   const thread = useTravelStore(selectTravelBotThread)
   const status = useTravelStore(selectTravelBotStatus)
   const { bootstrapTravelBot, sendTravelBotMessage } = useTravelStore(selectActions)
+  const hasBootstrapped = useRef(false)
 
   useEffect(() => {
-    bootstrapTravelBot()
-  }, [bootstrapTravelBot])
+    // Предотвращаем двойной вызов в StrictMode (эффекты выполняются дважды в dev режиме)
+    if (!hasBootstrapped.current) {
+      hasBootstrapped.current = true
+      bootstrapTravelBot()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Пустой массив - выполняется только при монтировании
 
   const onSend = () => {
     sendTravelBotMessage(draft)
