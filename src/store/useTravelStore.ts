@@ -255,8 +255,8 @@ export const useTravelStore = create(
           const currentThread = get().travelBotThread
           if (currentThread.length > 0) return
           set({ travelBotStatus: 'pending' })
+          const topMatches = get().results.slice(0, 3)
           try {
-            const topMatches = get().results.slice(0, 3)
             const response = await travelApi.initTravelBot({
               topMatches,
               preferences: get().searchParams.preferences,

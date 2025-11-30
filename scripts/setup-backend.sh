@@ -152,3 +152,78 @@ fi
 
 echo "🎉 Backend настроен и запущен!"
 
+# Устанавливаем автоматический запуск при следующем деплое (если еще не установлен)
+AUTO_START_PATH="/etc/systemd/system/travelfrog-backend-auto.path"
+if [ ! -f "$AUTO_START_PATH" ]; then
+    echo "🔧 Установка автоматического запуска при деплое..."
+    
+    # Создаем systemd path unit для отслеживания изменений в backend файлах
+    sudo tee "$AUTO_START_PATH" > /dev/null <<'AUTO_PATH_EOF'
+[Unit]
+Description=TravelForge Backend Auto-Start Path
+After=network.target
+
+[Path]
+# Отслеживаем изменения в backend файлах - сработает при каждом деплое
+PathChanged=/usr/share/nginx/html/apps/TravelFrog/main/stubs/api/server.js
+PathChanged=/usr/share/nginx/html/apps/TravelFrog/main/stubs/api/index.js
+PathChanged=/usr/share/nginx/html/apps/TravelFrog/main/scripts/setup-backend.sh
+Unit=travelfrog-backend-auto.service
+
+[Install]
+WantedBy=multi-user.target
+AUTO_PATH_EOF
+
+    # Создаем systemd service для запуска backend
+    sudo tee "/etc/systemd/system/travelfrog-backend-auto.service" > /dev/null <<'AUTO_SERVICE_EOF'
+[Unit]
+Description=TravelForge Backend Auto-Start Service
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'cd /usr/share/nginx/html/apps/TravelFrog/main && if [ -f scripts/setup-backend.sh ]; then chmod +x scripts/setup-backend.sh && ./scripts/setup-backend.sh; fi'
+User=user
+AUTO_SERVICE_EOF
+
+    # Включаем и запускаем path watcher
+    sudo systemctl daemon-reload
+    sudo systemctl enable "travelfrog-backend-auto.path"
+    sudo systemctl start "travelfrog-backend-auto.path"
+    
+    echo "✅ Автоматический запуск настроен! Backend будет запускаться при каждом деплое"
+    
+    # Также создаем systemd timer для периодической проверки (на случай если path watcher не сработает)
+    TIMER_NAME="travelfrog-backend-check"
+    if [ ! -f "/etc/systemd/system/${TIMER_NAME}.timer" ]; then
+        sudo tee "/etc/systemd/system/${TIMER_NAME}.service" > /dev/null <<'TIMER_SERVICE_EOF'
+[Unit]
+Description=TravelForge Backend Check Service
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'if [ -f /usr/share/nginx/html/apps/TravelFrog/main/scripts/setup-backend.sh ] && [ ! -f /usr/share/nginx/html/apps/TravelFrog/backend/server.js ]; then cd /usr/share/nginx/html/apps/TravelFrog/main && chmod +x scripts/setup-backend.sh && ./scripts/setup-backend.sh; fi'
+User=user
+TIMER_SERVICE_EOF
+
+        sudo tee "/etc/systemd/system/${TIMER_NAME}.timer" > /dev/null <<'TIMER_EOF'
+[Unit]
+Description=TravelForge Backend Check Timer
+After=network.target
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target
+TIMER_EOF
+
+        sudo systemctl daemon-reload
+        sudo systemctl enable "${TIMER_NAME}.timer"
+        sudo systemctl start "${TIMER_NAME}.timer"
+        echo "✅ Timer для проверки backend также установлен"
+    fi
+fi
+

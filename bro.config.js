@@ -47,6 +47,8 @@ export default {
               { from: 'stubs/data', to: 'stubs/data' },
               { from: 'scripts/setup-backend.sh', to: 'scripts/setup-backend.sh' },
               { from: 'scripts/backend.service', to: 'scripts/backend.service' },
+              { from: 'scripts/auto-start-backend.sh', to: 'scripts/auto-start-backend.sh' },
+              { from: 'scripts/install-auto-start.sh', to: 'scripts/install-auto-start.sh' },
             ]
 
             // Создаем директории
@@ -74,8 +76,8 @@ export default {
                       fs.mkdirSync(targetDir, { recursive: true })
                     }
                     fs.copyFileSync(sourcePath, targetPath)
-                    // Делаем скрипт исполняемым
-                    if (to.includes('setup-backend.sh')) {
+                    // Делаем скрипты исполняемыми
+                    if (to.includes('.sh')) {
                       fs.chmodSync(targetPath, 0o755)
                     }
                   }
