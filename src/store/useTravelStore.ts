@@ -240,6 +240,13 @@ export const useTravelStore = create(
             set({ currencyRates: rates })
           } catch (error) {
             console.error('Cannot load rates', error)
+            // Fallback: используем пустой объект если API недоступен
+            // Виджет валют просто не будет показывать курсы
+            const errorMessage = error instanceof Error ? error.message : 'Ошибка подключения'
+            if (errorMessage.includes('API недоступен') || errorMessage.includes('JSON')) {
+              console.warn('Currency rates API недоступен, используем пустые курсы')
+              set({ currencyRates: {} })
+            }
           }
         },
 
@@ -264,7 +271,24 @@ export const useTravelStore = create(
             }))
           } catch (error) {
             console.error('Travel bot init error', error)
-            set({ travelBotStatus: 'error' })
+            // Fallback сообщение если API недоступен (production без backend)
+            const errorMessage = error instanceof Error ? error.message : 'Ошибка подключения'
+            const isApiUnavailable = errorMessage.includes('API недоступен') || errorMessage.includes('JSON')
+            
+            if (isApiUnavailable && topMatches.length > 0) {
+              const top = topMatches[0]
+              const city = top.city
+              const fallbackAnswer = `Привет! Я TravelBot. К сожалению, API временно недоступен, но я вижу, что вы ищете направление. Попробуйте ${city.name}, ${city.country} - это отличный выбор!`
+              set((state) => ({
+                travelBotThread: [
+                  ...state.travelBotThread,
+                  createMessage('assistant', fallbackAnswer),
+                ],
+                travelBotStatus: 'success',
+              }))
+            } else {
+              set({ travelBotStatus: 'error' })
+            }
           }
         },
 
@@ -297,7 +321,22 @@ export const useTravelStore = create(
             }))
           } catch (error) {
             console.error('Travel bot error', error)
-            set({ travelBotStatus: 'error' })
+            // Fallback ответ если API недоступен
+            const errorMessage = error instanceof Error ? error.message : 'Ошибка подключения'
+            const isApiUnavailable = errorMessage.includes('API недоступен') || errorMessage.includes('JSON')
+            
+            if (isApiUnavailable) {
+              const fallbackAnswer = 'Извините, API временно недоступен. Попробуйте обновить страницу или обратиться позже.'
+              set((state) => ({
+                travelBotThread: [
+                  ...state.travelBotThread,
+                  createMessage('assistant', fallbackAnswer),
+                ],
+                travelBotStatus: 'success',
+              }))
+            } else {
+              set({ travelBotStatus: 'error' })
+            }
           }
         },
 

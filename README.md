@@ -35,3 +35,19 @@ TravelBot использует GigaChat для умных ответов. Есл
 
 Для настройки GigaChat см. `docs/GIGACHAT_SETUP.md`.
 
+### Backend API сервер
+
+Для production доступен standalone Express сервер:
+
+```bash
+# Локально
+npm run api:start
+
+# Production деплой
+# См. docs/BACKEND_DEPLOY.md
+```
+
+Backend сервер работает на порту 3000 и обслуживает все запросы к `/api/*`. 
+
+**Автоматический деплой:** Backend файлы автоматически копируются в `dist/` при сборке через brojs! См. `BACKEND_AUTO_DEPLOY.md` для инструкции по деплою.
+

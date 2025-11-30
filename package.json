@@ -8,13 +8,16 @@
     "build:prod": "brojs build",
     "build:dev": "brojs build --dev",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "api:start": "node stubs/api/server.js",
+    "api:dev": "NODE_ENV=development node stubs/api/server.js"
   },
   "dependencies": {
     "@brojs/cli": "^1.10.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "axios": "^1.7.7",
+    "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

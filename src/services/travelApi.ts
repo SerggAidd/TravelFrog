@@ -18,7 +18,18 @@ type ApiEnvelope<T> = {
 }
 
 const handleResponse = async <T>(res: Response): Promise<T> => {
-  const payload: ApiEnvelope<T> = await res.json()
+  // Проверяем Content-Type перед парсингом JSON
+  const contentType = res.headers.get('content-type')
+  if (!contentType || !contentType.includes('application/json')) {
+    // Если получили HTML вместо JSON, значит API недоступен (вероятно, production без backend)
+    const text = await res.text()
+    if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+      throw new Error('API недоступен. Stub API работает только в dev режиме. В production нужен отдельный backend сервер.')
+    }
+    throw new Error(`Ожидался JSON, получен ${contentType}. Ответ: ${text.substring(0, 100)}`)
+  }
+  
+  const payload: ApiEnvelope<T> = JSON.parse(await res.text())
   if (!res.ok || !payload.success || !payload.data) {
     throw new Error(payload.error || 'API error')
   }
