@@ -49,5 +49,13 @@ npm run api:start
 
 Backend сервер работает на порту 3000 и обслуживает все запросы к `/api/*`. 
 
-**Автоматический деплой:** Backend файлы автоматически копируются в `dist/` при сборке через brojs! Backend запускается автоматически при каждом деплое через systemd path watcher. См. `AUTO_START_BACKEND.md` или `README_BACKEND.md` для инструкции.
+**Автоматический деплой:** Backend файлы автоматически копируются в `dist/` при сборке через brojs! 
+
+**⚠️ Важно:** После первого деплоя нужно один раз запустить на сервере:
+```bash
+cd /usr/share/nginx/html/apps/TravelFrog/main
+sudo ./scripts/install-backend-watcher.sh
+```
+
+После этого backend будет запускаться автоматически при каждом деплое. См. `QUICK_FIX.md` или `INSTALL_BACKEND.md` для инструкции.
 

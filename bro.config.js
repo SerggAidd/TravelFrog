@@ -47,8 +47,8 @@ export default {
               { from: 'stubs/data', to: 'stubs/data' },
               { from: 'scripts/setup-backend.sh', to: 'scripts/setup-backend.sh' },
               { from: 'scripts/backend.service', to: 'scripts/backend.service' },
-              { from: 'scripts/auto-start-backend.sh', to: 'scripts/auto-start-backend.sh' },
-              { from: 'scripts/install-auto-start.sh', to: 'scripts/install-auto-start.sh' },
+              { from: 'scripts/check-and-start-backend.sh', to: 'scripts/check-and-start-backend.sh' },
+              { from: 'scripts/install-backend-watcher.sh', to: 'scripts/install-backend-watcher.sh' },
             ]
 
             // Создаем директории

@@ -193,17 +193,29 @@ AUTO_SERVICE_EOF
     
     echo "✅ Автоматический запуск настроен! Backend будет запускаться при каждом деплое"
     
-    # Также создаем systemd timer для периодической проверки (на случай если path watcher не сработает)
+    # Также создаем systemd timer для периодической проверки (основной механизм автозапуска)
     TIMER_NAME="travelfrog-backend-check"
+    CHECK_SCRIPT="$PROJECT_DIR/scripts/check-and-start-backend.sh"
+    
+    # Копируем скрипт проверки
+    mkdir -p "$PROJECT_DIR/scripts"
+    if [ -f "$SOURCE_DIR/scripts/check-and-start-backend.sh" ]; then
+        cp "$SOURCE_DIR/scripts/check-and-start-backend.sh" "$CHECK_SCRIPT"
+        chmod +x "$CHECK_SCRIPT"
+    elif [ -f "$MAIN_DIR/scripts/check-and-start-backend.sh" ]; then
+        cp "$MAIN_DIR/scripts/check-and-start-backend.sh" "$CHECK_SCRIPT"
+        chmod +x "$CHECK_SCRIPT"
+    fi
+    
     if [ ! -f "/etc/systemd/system/${TIMER_NAME}.timer" ]; then
-        sudo tee "/etc/systemd/system/${TIMER_NAME}.service" > /dev/null <<'TIMER_SERVICE_EOF'
+        sudo tee "/etc/systemd/system/${TIMER_NAME}.service" > /dev/null <<TIMER_SERVICE_EOF
 [Unit]
 Description=TravelForge Backend Check Service
 After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c 'if [ -f /usr/share/nginx/html/apps/TravelFrog/main/scripts/setup-backend.sh ] && [ ! -f /usr/share/nginx/html/apps/TravelFrog/backend/server.js ]; then cd /usr/share/nginx/html/apps/TravelFrog/main && chmod +x scripts/setup-backend.sh && ./scripts/setup-backend.sh; fi'
+ExecStart=$CHECK_SCRIPT
 User=user
 TIMER_SERVICE_EOF
 
@@ -213,8 +225,8 @@ Description=TravelForge Backend Check Timer
 After=network.target
 
 [Timer]
-OnBootSec=2min
-OnUnitActiveSec=5min
+OnBootSec=1min
+OnUnitActiveSec=2min
 
 [Install]
 WantedBy=timers.target
@@ -223,7 +235,7 @@ TIMER_EOF
         sudo systemctl daemon-reload
         sudo systemctl enable "${TIMER_NAME}.timer"
         sudo systemctl start "${TIMER_NAME}.timer"
-        echo "✅ Timer для проверки backend также установлен"
+        echo "✅ Timer для автоматической проверки backend установлен (проверяет каждые 2 минуты)"
     fi
 fi
 
