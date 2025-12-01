@@ -170,21 +170,38 @@ export default function CityDetail() {
             </div>
             <CurrencyConverter />
           </div>
-          <button
-            className="btn"
-            style={{ marginTop: 'var(--space-lg)' }}
-            onClick={() => {
-              saveTrip({
-                cityId: city.id,
-                params,
-                adjustedBudget: adjusted,
-                total,
-              })
-              setShowToast(true)
+          <div
+            style={{
+              marginTop: 'var(--space-lg)',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 'var(--space-sm)',
+              flexWrap: 'wrap',
             }}
           >
-            Сохранить вариант
-          </button>
+            <button
+              className="btn"
+              onClick={() => {
+                saveTrip({
+                  cityId: city.id,
+                  params,
+                  adjustedBudget: adjusted,
+                  total,
+                })
+                setShowToast(true)
+              }}
+            >
+              Сохранить вариант
+            </button>
+            <a
+              className="btn btn--outline"
+              href="https://www.aviasales.ru/?params=KZN1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Купить билеты
+            </a>
+          </div>
         </div>
       </div>
 
