@@ -6,7 +6,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:prod": "react-scripts build",
+    "build:prod": "react-scripts build && rm -rf dist && mkdir -p dist && cp -r build/* dist/",
     "test": "react-scripts test --watchAll=false",
     "lint": "tsc --noEmit"
   },
