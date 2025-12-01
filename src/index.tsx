@@ -6,7 +6,27 @@ import './styles.css';
 import { BudgetProvider } from './context/BudgetContext';
 import { AuthProvider } from './context/AuthContext';
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+// Список возможных id контейнера: сначала 'root' (CRA), потом 'app' (часто бывает на платформах)
+const CONTAINER_IDS = ['root', 'app'];
+
+function getContainer(): HTMLElement {
+  for (const id of CONTAINER_IDS) {
+    const el = document.getElementById(id);
+    if (el instanceof HTMLElement) {
+      return el;
+    }
+  }
+
+  // Если ничего не нашли — создаём div#root
+  const fallback = document.createElement('div');
+  fallback.id = CONTAINER_IDS[0];
+  document.body.appendChild(fallback);
+  return fallback;
+}
+
+const container = getContainer();
+const root = ReactDOM.createRoot(container);
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>
