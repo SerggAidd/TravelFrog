@@ -1,0 +1,21 @@
+{
+  "name": "TravelFrog Budget Compass",
+  "short_name": "Compass",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#111828",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/apps/TravelFrog/main/remote-assets/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/apps/TravelFrog/main/remote-assets/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ]
+}
+

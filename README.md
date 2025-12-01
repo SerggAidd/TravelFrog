@@ -1,46 +1,47 @@
-# Getting Started with Create React App
+# TravelFrog ― Budget Compass MFE
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Single-page приложение для расчёта и визуализации бюджета путешествий. Проект разворачивается и локально, и на Jenkins одинаковыми командами:
 
-## Available Scripts
+```bash
+cd budget-compass-mfe
+npm install
+npm start
+```
 
-In the project directory, you can run:
+`npm start` запускает dev-сервер Create React App (`react-scripts`). Production-сборка делается через `npm run build` (или `npm run build:prod`, который дополнительно собирает артефакты в `dist/` для пайплайна).
 
-### `npm start`
+## Scripts
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `npm start` — dev-server на `http://localhost:3000`.
+- `npm run build` — production сборка в `build/`.
+- `npm run build:prod` — build + копирование артефактов (`index.js`, `remote-assets/`, `scripts/`, `stubs/`) в `dist/` для Jenkins.
+- `npm test` — unit-тесты (не используются на пайплайне).
+- `npm run lint` — проверка тайпскрипта (`tsc --noEmit`).
+- `npm run api:start` — локальный запуск express-stub из `stubs/api`.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Mock backend
 
-### `npm test`
+Папка `stubs/` содержит express-сервер и мок-данные, которые разворачиваются вместе с фронтендом. Скрипты для сервера лежат в `scripts/` и копируются Jenkins'ом на таргет. Ручки соответствуют `src/services/api.ts`, поэтому фронт может работать без настоящего бэкенда.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Реальный backend
 
-### `npm run build`
+По умолчанию фронтенд обращается к `http://31.57.158.196:5000/api`. Если адрес изменится, положи `.env` рядом с `package.json`:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+REACT_APP_API_BASE_URL=http://31.57.158.196:5000/api
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+После изменения переменной окружения перезапусти `npm start` или пересобери прод (`npm run build:prod`), чтобы CRA перехватила новое значение.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Требования
 
-### `npm run eject`
+- Node.js ≥ 18
+- npm ≥ 9
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Структура
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `src/` — исходники React-приложения.
+- `public/` — статика и HTML-шаблон CRA.
+- `remote-assets/` — favicons/manifest для деплоя.
+- `scripts/` — systemd-скрипты для запуска stubs.
+- `stubs/` — express server + мок-данные.

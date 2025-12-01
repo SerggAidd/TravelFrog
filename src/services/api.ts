@@ -1,6 +1,19 @@
-import { City, SavedTrip, CurrencyRates, TravelBotResponse, TravelBotRequest, BudgetBreakdown, AuthResponse, LoginRequest, RegisterRequest, User } from '../types'
+import {
+  City,
+  SavedTrip,
+  CurrencyRates,
+  TravelBotResponse,
+  TravelBotRequest,
+  BudgetBreakdown,
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+  User,
+} from '../types'
 
-const API_BASE_URL = 'http://localhost:5000/api'
+const defaultApi = 'http://31.57.158.196:5000/api'
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL?.replace(/\/$/, '') || defaultApi
 const TOKEN_KEY = 'budget-compass.auth.token'
 
 interface ApiResponse<T> {
