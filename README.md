@@ -14,14 +14,9 @@ npm start
 
 - `npm start` — dev-server на `http://localhost:3000`.
 - `npm run build` — production сборка в `build/`.
-- `npm run build:prod` — build + копирование артефактов (`index.js`, `remote-assets/`, `scripts/`, `stubs/`) в `dist/` для Jenkins.
+- `npm run build:prod` — алиас на `npm run build`, используется Jenkins.
 - `npm test` — unit-тесты (не используются на пайплайне).
 - `npm run lint` — проверка тайпскрипта (`tsc --noEmit`).
-- `npm run api:start` — локальный запуск express-stub из `stubs/api`.
-
-## Mock backend
-
-Папка `stubs/` содержит express-сервер и мок-данные, которые разворачиваются вместе с фронтендом. Скрипты для сервера лежат в `scripts/` и копируются Jenkins'ом на таргет. Ручки соответствуют `src/services/api.ts`, поэтому фронт может работать без настоящего бэкенда.
 
 ### Реальный backend
 
@@ -42,6 +37,3 @@ REACT_APP_API_BASE_URL=http://31.57.158.196:5000/api
 
 - `src/` — исходники React-приложения.
 - `public/` — статика и HTML-шаблон CRA.
-- `remote-assets/` — favicons/manifest для деплоя.
-- `scripts/` — systemd-скрипты для запуска stubs.
-- `stubs/` — express server + мок-данные.
