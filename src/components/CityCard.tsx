@@ -1,18 +1,26 @@
-import { Link } from 'react-router-dom';
-import ProgressBar from './ProgressBar';
-import MiniPie from './MiniPie';
-import { City } from '../types';
+import { Link } from 'react-router-dom'
+import ProgressBar from './ProgressBar'
+import MiniPie from './MiniPie'
+import { City, BudgetBreakdown } from '../types'
 
 export default function CityCard({ city, budgetLeftPct, match }: { city: City; budgetLeftPct: number; match?: { culture: number; nature: number; party: number; weighted: number } }) {
-  const pie = [
-    { name: 'Перелёты', value: city.mockBudget.flights },
-    { name: 'Жильё', value: city.mockBudget.lodging },
-    { name: 'Еда', value: city.mockBudget.food },
-    { name: 'Местное', value: city.mockBudget.local },
-    { name: 'Резерв', value: city.mockBudget.buffer },
-  ];
+  const fallbackBudget: BudgetBreakdown = city.mockBudget || {
+    flights: 35,
+    lodging: 30,
+    food: 20,
+    local: 10,
+    buffer: 5,
+  }
 
-  const budgetStatus = budgetLeftPct >= 100 ? 'success' : budgetLeftPct >= 80 ? 'warning' : 'danger';
+  const pie = [
+    { name: 'Перелёты', value: fallbackBudget.flights },
+    { name: 'Жильё', value: fallbackBudget.lodging },
+    { name: 'Еда', value: fallbackBudget.food },
+    { name: 'Местное', value: fallbackBudget.local },
+    { name: 'Резерв', value: fallbackBudget.buffer },
+  ]
+
+  const budgetStatus = budgetLeftPct >= 100 ? 'success' : budgetLeftPct >= 80 ? 'warning' : 'danger'
 
   return (
     <div className="card city-card">

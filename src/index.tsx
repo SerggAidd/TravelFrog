@@ -1,35 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import './styles.css';
-import { BudgetProvider } from './context/BudgetContext';
-import { AuthProvider } from './context/AuthContext';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App'
+import './styles.css'
+import { BudgetProvider } from './context/BudgetContext'
+import { AuthProvider } from './context/AuthContext'
 
-// Список возможных id контейнера: сначала 'root' (CRA), потом 'app' (часто бывает на платформах)
-const CONTAINER_IDS = ['root', 'app'];
-
-function getContainer(): HTMLElement {
-  for (const id of CONTAINER_IDS) {
-    const el = document.getElementById(id);
-    if (el instanceof HTMLElement) {
-      return el;
-    }
+const getBasename = () => {
+  if (typeof window === 'undefined') {
+    return '/'
   }
-
-  // Если ничего не нашли — создаём div#root
-  const fallback = document.createElement('div');
-  fallback.id = CONTAINER_IDS[0];
-  document.body.appendChild(fallback);
-  return fallback;
+  const custom = (window as typeof window & { __TRAVELFROG_BASENAME__?: string })
+    .__TRAVELFROG_BASENAME__
+  return custom || '/budget-compass-mfe'
 }
 
-const container = getContainer();
-const root = ReactDOM.createRoot(container);
-
-root.render(
+const Root = () => (
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={getBasename()}>
       <AuthProvider>
         <BudgetProvider>
           <App />
@@ -37,4 +25,31 @@ root.render(
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
-);
+)
+
+export default Root
+
+let rootElement: ReactDOM.Root | null = null
+
+export const mount = (
+  Component: React.ComponentType = Root,
+  element: HTMLElement | null = document.getElementById('app') || document.getElementById('root'),
+) => {
+  if (!element) {
+    throw new Error('Mount element not found')
+  }
+
+  rootElement = ReactDOM.createRoot(element)
+  rootElement.render(<Component />)
+
+  if (import.meta && import.meta.hot) {
+    import.meta.hot.accept('./App', () => {
+      rootElement?.render(<Component />)
+    })
+  }
+}
+
+export const unmount = () => {
+  rootElement?.unmount()
+  rootElement = null
+}

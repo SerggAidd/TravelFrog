@@ -11,9 +11,7 @@ import {
   User,
 } from '../types'
 
-const defaultApi = 'http://31.57.158.196:5000/api'
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL?.replace(/\/$/, '') || defaultApi
+const API_BASE_URL = 'http://31.57.158.196:5000/api'
 const TOKEN_KEY = 'budget-compass.auth.token'
 
 interface ApiResponse<T> {

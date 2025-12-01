@@ -23,10 +23,10 @@ export default function Home() {
           <div className="container">
             <div className="hero__content">
               <h1 className="hero__title">
-                Путешествия, которые тебе по карману — и по душе
+                TravelFrog — путешествия, которые по карману и по душе
               </h1>
               <p className="hero__subtitle">
-                Бюджетный компас - ваш помощник по поиску лучших маршрутов и впечатлений в рамках своего бюджета
+                TravelFrog помогает находить лучшие маршруты, укладываясь в ваш бюджет и предпочтения
               </p>
             </div>
           </div>

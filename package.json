@@ -1,50 +1,43 @@
 {
-  "name": "budget-compass-mfe",
-  "version": "0.1.0",
-  "private": true,
-  "main": "src/index.tsx",
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build:prod": "react-scripts build && rm -rf dist && mkdir -p dist && cp -r build/* dist/",
-    "test": "react-scripts test --watchAll=false",
-    "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "axios": "^1.7.7",
-    "leaflet": "^1.9.4",
-    "leaflet-defaulticon-compatibility": "^0.1.1",
-    "nanoid": "^4.0.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-leaflet": "^4.2.1",
-    "react-router-dom": "^6.28.0",
-    "react-scripts": "5.0.1",
-    "recharts": "^2.12.7",
-    "zustand": "^4.5.2"
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^6.4.5",
-    "@testing-library/react": "^14.2.1",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/leaflet": "^1.9.9",
-    "@types/node": "^18.19.50",
-    "@types/react": "^18.3.4",
-    "@types/react-dom": "^18.3.2",
-    "typescript": "^4.9.5"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "budget-compass-mfe",
+    "version": "0.0.0",
+    "description": "Полнофункциональное приложение для планирования поездок с учетом бюджета и предпочтений.",
+    "main": "./src/index.tsx",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "brojs server --port=8099 --with-open-browser",
+        "build": "npm run clean && brojs build --dev",
+        "build:prod": "npm run clean && brojs build",
+        "clean": "rimraf dist",
+        "compile": "brojs compile",
+        "prom": "npm run compile && brojs prom-server --port=8099"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Darriyano/budget-compass-mfe.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Darriyano/budget-compass-mfe/issues"
+    },
+    "homepage": "https://github.com/Darriyano/budget-compass-mfe#readme",
+    "dependencies": {
+        "@brojs/cli": "^2.0.0",
+        "@types/react": "^18.3.27",
+        "@types/react-dom": "^18.3.7",
+        "express": "^4.21.2",
+        "leaflet": "^1.9.4",
+        "leaflet-defaulticon-compatibility": "^0.1.2",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-leaflet": "^4.2.1",
+        "react-router-dom": "^6.28.0",
+        "recharts": "^3.2.1",
+        "rimraf": "^5.0.10"
+    },
+    "devDependencies": {
+        "@types/leaflet": "^1.9.20"
+    }
 }
