@@ -1,4 +1,0 @@
-# Netlify redirects для SPA
-# Все запросы перенаправляются на index.html для поддержки client-side routing
-/*    /index.html   200
-

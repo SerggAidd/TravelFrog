@@ -1,24 +1,20 @@
-import React from 'react'
-import { createRoot, Root } from 'react-dom/client'
-import App from './App'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './styles.css';
+import { BudgetProvider } from './context/BudgetContext';
+import { AuthProvider } from './context/AuthContext';
 
-let root: Root | null = null
-
-export const mount = (Component: typeof App, el: HTMLElement, _deps?: { push?: (path: string) => void }) => {
-  root = createRoot(el)
-  root.render(
-    <React.StrictMode>
-      <Component />
-    </React.StrictMode>,
-  )
-}
-
-export const unmount = () => {
-  if (root) {
-    root.unmount()
-    root = null
-  }
-}
-
-export default App
-
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <BudgetProvider>
+          <App />
+        </BudgetProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);

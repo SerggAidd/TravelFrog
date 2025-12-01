@@ -1,61 +1,46 @@
-## TravelForge (brojs edition)
+# Getting Started with Create React App
 
-### Что это
-- Учебный SPA микрофронтенд на **brojs**, который переосмысливает старый React-проект "Budget Compass" в формат стартап-презентации TravelForge.
-- Выполнены требования преподавателя: SPA, REST, формы, минимум 3 экрана, визуализации, unit-тесты, Express stubs, CSS-in-JS, data-manipulation library.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-### Основные возможности
-- Интерактивная форма подбора маршрута с бюджетом, датами и предпочтениями.
-- Карточки направлений, карта Leaflet, пай-чарт распределения бюджета, TravelBot и currency widget.
-- Раздел Trips с сохранёнными "лидами".
-- Intelligence Deck с конкурентным анализом и feature flags.
+## Available Scripts
 
-### Технологии
-- **brojs** (`@brojs/cli`, `@brojs/fire.app`) + React 18 + Emotion + Zustand.
-- **Stub API** на Express (`stubs/api`), данные в `stubs/data`.
-- **TravelBot** с интеграцией **GigaChat** (LLM от Сбера) для умных ответов.
-- **Визуализации**: Recharts, Leaflet.
-- **Тесты**: Vitest.
+In the project directory, you can run:
 
-### Быстрый старт
-```bash
-npm install
-npm run dev           # http://localhost:4173/travelforge-app
-npm run build         # production сборка в dist/
-npm test              # unit-тесты
-```
+### `npm start`
 
-**Примечание:** GigaChat credentials уже настроены в файле `.env`. При первом запуске убедитесь, что установлены все зависимости (включая `dotenv` для загрузки переменных окружения).
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Документация продукта: `docs/TRAVELFORGE.md`.
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-### Настройка GigaChat (опционально)
+### `npm test`
 
-TravelBot использует GigaChat для умных ответов. Если GigaChat недоступен, используется fallback на шаблонные ответы.
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-Для настройки GigaChat см. `docs/GIGACHAT_SETUP.md`.
+### `npm run build`
 
-### Backend API сервер
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-Для production доступен standalone Express сервер:
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-```bash
-# Локально
-npm run api:start
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-# Production деплой
-# См. docs/BACKEND_DEPLOY.md
-```
+### `npm run eject`
 
-Backend сервер работает на порту 3000 и обслуживает все запросы к `/api/*`. 
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-**Автоматический деплой:** Backend файлы автоматически копируются в `dist/` при сборке через brojs! 
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-**⚠️ Важно:** После первого деплоя нужно один раз запустить на сервере:
-```bash
-cd /usr/share/nginx/html/apps/TravelFrog/main
-sudo ./scripts/install-backend-watcher.sh
-```
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-После этого backend будет запускаться автоматически при каждом деплое. См. `QUICK_FIX.md` или `INSTALL_BACKEND.md` для инструкции.
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
