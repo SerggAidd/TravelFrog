@@ -11,7 +11,7 @@ import {
   User,
 } from '../types'
 
-const API_BASE_URL = 'http://31.57.158.196:5000/api'
+const API_BASE_URL = 'https://netimaaa.ru/api'
 const TOKEN_KEY = 'travelforge.auth.token'
 
 interface ApiResponse<T> {
