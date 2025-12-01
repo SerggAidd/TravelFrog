@@ -9,7 +9,8 @@ module.exports = {
   },
   /* use https://admin.bro-js.ru/ to create config, navigations and features */
   navigations: {
-    "travelforge.main": "/TravelForge",
+    "TravelForge.main": "/TravelForge",
+    "TravelForge.results": "/TravelForge/results"
   },
   features: {
     "travelforge": {

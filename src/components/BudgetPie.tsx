@@ -1,3 +1,4 @@
+import React from 'react';
 import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { BudgetBreakdown } from '../types';
 
