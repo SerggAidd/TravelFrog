@@ -8,7 +8,7 @@ import React, {
 import { BudgetBreakdown, SavedTrip, SearchParams } from '../types'
 import { apiService } from '../services/api'
 
-const LS_KEY = 'budget-compass.savedTrips.v1'
+const LS_KEY = 'travelforge.savedTrips.v1'
 
 type Ctx = {
   params: SearchParams

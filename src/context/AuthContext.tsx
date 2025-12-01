@@ -8,8 +8,8 @@ import React, {
 import { User, LoginRequest, RegisterRequest } from '../types'
 import { apiService } from '../services/api'
 
-const TOKEN_KEY = 'budget-compass.auth.token'
-const USER_KEY = 'budget-compass.auth.user'
+const TOKEN_KEY = 'travelforge.auth.token'
+const USER_KEY = 'travelforge.auth.user'
 
 type AuthContextType = {
   user: User | null

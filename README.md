@@ -1,4 +1,4 @@
-# Budget Compass - Планировщик поездок
+# TravelForge - Планировщик поездок
 
 Полнофункциональное приложение для планирования поездок с учетом бюджета и предпочтений.
 
@@ -22,7 +22,7 @@
 1. **Запуск бэкенда:**
 
 ```bash
-cd budget-compass-backend
+cd travelforge-backend
 npm install
 npm run dev
 ```
@@ -30,7 +30,7 @@ npm run dev
 2. **Запуск фронтенда:**
 
 ```bash
-cd budget-compass-mfe
+cd travelforge-mfe
 npm install
 npm start
 ```
@@ -71,7 +71,7 @@ npm start
 
 ```
 project/
-├── budget-compass-mfe/          # React фронтенд
+├── travelforge-mfe/             # React фронтенд
 │   ├── src/
 │   │   ├── components/          # React компоненты
 │   │   ├── pages/              # Страницы приложения
@@ -79,7 +79,7 @@ project/
 │   │   ├── services/           # API сервисы
 │   │   └── types.ts            # TypeScript типы
 │   └── package.json
-├── budget-compass-backend/       # Express бэкенд
+├── travelforge-backend/          # Express бэкенд
 │   ├── src/
 │   │   ├── controllers/         # API контроллеры
 │   │   ├── models/             # Модели данных
@@ -102,15 +102,15 @@ project/
 
 ### Добавление новых городов
 
-Отредактируйте `budget-compass-backend/src/models/CityModel.ts`
+Отредактируйте `travelforge-backend/src/models/CityModel.ts`
 
 ### Добавление новых валют
 
-Отредактируйте `budget-compass-backend/src/models/CurrencyModel.ts`
+Отредактируйте `travelforge-backend/src/models/CurrencyModel.ts`
 
 ### Расширение TravelBot
 
-Отредактируйте `budget-compass-backend/src/services/TravelBotService.ts`
+Отредактируйте `travelforge-backend/src/services/TravelBotService.ts`
 
 ## 📊 Примеры API запросов
 

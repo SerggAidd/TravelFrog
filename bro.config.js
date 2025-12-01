@@ -9,15 +9,15 @@ module.exports = {
   },
   /* use https://admin.bro-js.ru/ to create config, navigations and features */
   navigations: {
-    "budget-compass-mfe.main": "/budget-compass-mfe",
+    "travelforge.main": "/TravelForge",
   },
   features: {
-    "budget-compass-mfe": {
+    "travelforge": {
       // add your features here in the format [featureName]: { value: string }
     },
   },
   config: {
-    "budget-compass-mfe.api": "/api",
+    "travelforge.api": "/api",
   },
   // Укажите путь к кастомному HTML-шаблону для prom-режима или оставьте undefined
   htmlTemplatePath: undefined,

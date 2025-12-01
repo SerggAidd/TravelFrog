@@ -1,5 +1,5 @@
 {
-    "name": "budget-compass-mfe",
+    "name": "travelforge",
     "version": "0.0.0",
     "description": "Полнофункциональное приложение для планирования поездок с учетом бюджета и предпочтений.",
     "main": "./src/index.tsx",
@@ -14,15 +14,15 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Darriyano/budget-compass-mfe.git"
+        "url": "git+https://github.com/SerggAidd/TravelFrog.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/Darriyano/budget-compass-mfe/issues"
+        "url": "https://github.com/SerggAidd/TravelFrog/issues"
     },
-    "homepage": "https://github.com/Darriyano/budget-compass-mfe#readme",
+    "homepage": "https://github.com/SerggAidd/TravelFrog#readme",
     "dependencies": {
         "@brojs/cli": "^2.0.0",
         "@types/react": "^18.3.27",

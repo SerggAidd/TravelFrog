@@ -12,7 +12,7 @@ const getBasename = () => {
   }
   const custom = (window as typeof window & { __TRAVELFROG_BASENAME__?: string })
     .__TRAVELFROG_BASENAME__
-  return custom || '/budget-compass-mfe'
+  return custom || '/TravelForge'
 }
 
 const Root = () => (

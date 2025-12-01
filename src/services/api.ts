@@ -12,7 +12,7 @@ import {
 } from '../types'
 
 const API_BASE_URL = 'http://31.57.158.196:5000/api'
-const TOKEN_KEY = 'budget-compass.auth.token'
+const TOKEN_KEY = 'travelforge.auth.token'
 
 interface ApiResponse<T> {
   success: boolean
